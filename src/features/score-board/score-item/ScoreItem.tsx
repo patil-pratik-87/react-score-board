@@ -1,6 +1,8 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useState } from "react";
+import { useAppSelector } from "../../../app/hooks";
 import { Bar } from "../../../app/shared/ui-controls/Bar";
+import { ScoreBoardState } from "../scoreBoardSlice";
 import styles from "./ScoreItem.module.scss";
 
 export type Score = {country:string, score:number};
@@ -9,6 +11,7 @@ export type ScoreItemProps = {scores:Score[], score:Score};
 export const ScoreItem:React.FunctionComponent<ScoreItemProps>  =  ({score, scores=[]}) => {
   
   const [value, setScore] = useState(score);
+  const state:ScoreBoardState = useAppSelector(state => state.scoreBoard);
 
   return (
     <div className={styles.item}>
@@ -20,6 +23,7 @@ export const ScoreItem:React.FunctionComponent<ScoreItemProps>  =  ({score, scor
       onChange={(event, score) => {
         setScore(score!);
       }}
+      disabled={state.status === 'loading'}
       autoHighlight
       getOptionLabel={(option) => option.country}
       renderInput={(params) => (
@@ -35,6 +39,7 @@ export const ScoreItem:React.FunctionComponent<ScoreItemProps>  =  ({score, scor
           id="outlined-read-only-input"
           label="Average"
           size="small"
+          disabled={state.status === 'loading'}
           value={value?.score ?? 0}
           InputProps={{
             readOnly: true,

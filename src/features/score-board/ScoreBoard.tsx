@@ -1,33 +1,29 @@
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
-import { useEffect, useState,  } from "react";
+import { FormControl, FormControlLabel, FormLabel, LinearProgress, Radio, RadioGroup } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Score } from "./Score";
 import { ScoreItem } from "./score-item/ScoreItem";
 import styles from "./ScoreBoard.module.css";
-import { fetchScores, scores as battingScores} from "./scoreBoardSlice";
+import { fetchScores, reset, ScoreBoardState } from "./scoreBoardSlice";
 
 
 export function ScoreBoard() {
 
-  const scores:Score[] = useAppSelector(battingScores);
-  const [mock, setMock] = useState(true);
+  const state:ScoreBoardState = useAppSelector(state => state.scoreBoard);
+  const [mock, setMock] = useState('true' as 'true' | 'false');
   const dispatch = useAppDispatch();
 
     useEffect(() => {
       dispatch(fetchScores(mock))
-    }, [])
+    }, [mock, dispatch])
 
-    const handleChange = (event:any) => {
-      setMock(previousState => {
-        dispatch(fetchScores( event.target?.value==='true'))
-        return event.target.value
-      })
-      
+    const handleChange = (event:any) => setMock(event.target.value)
 
-    };
+    const ProgressBar = state.status ==='loading' ? <LinearProgress/> : null;
 
     return (
-      <div>
+  <div className={styles.boardContainer}>
+      { ProgressBar}
+      <div className={styles.board}>
         <FormControl component="fieldset" className={styles.radioFormGroup}>
         <FormLabel component="legend">Sources of data</FormLabel>
         <RadioGroup
@@ -42,8 +38,9 @@ export function ScoreBoard() {
         </RadioGroup>
       </FormControl>
 
-      <ScoreItem score={scores[0]} scores={scores}/>
-      <ScoreItem  score={scores[1]} scores={scores}/>
+      <ScoreItem score={state.scores[0]} scores={state.scores}/>
+      <ScoreItem score={state.scores[1]} scores={state.scores}/>
       </div>
+    </div>
     )
 }

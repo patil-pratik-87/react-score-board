@@ -1,71 +1,88 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppThunk } from "../../app/store";
 import { Score } from "./Score";
 import { fetchBattingAverages } from "./scoreBoardService";
 
 export interface ScoreBoardState {
   scores: Score[];
   status: "idle" | "loading" | "failed";
+  error ?: string
 }
 
 const initialState: ScoreBoardState = {
   scores: [],
   status: "idle",
+  error :'Operation Failure'
 };
 
-export const fetchScores = createAsyncThunk(
-  "fetch/scores",
-  async (mock: boolean) => {
+// export const fetchScores = createAsyncThunk(
+//   "fetch/scores",
+//   async (mock: boolean) => {
+//     const response = await fetchBattingAverages(mock);
+//     return response;
+//   }
+// );
+
+export const fetchScores = (mock:'true' | 'false'): AppThunk => async (dispatch,getState) => {
+  try {
+    dispatch(setLoadingStatus())
     const response = await fetchBattingAverages(mock);
-    return response;
+    dispatch(setBattingAverages(response));
+    dispatch(setIdleStatus())
+  } catch (error) {
+    debugger
+    dispatch(setFailureStatus('There was an error while getting the scores'))
   }
-);
+};
+
 export const scoreBoardSlice = createSlice({
   name: "scoreBoard",
   initialState,
   reducers: {
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload;
-    // },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchScores.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchScores.fulfilled, (state, action) => {
-        state.status = "idle";
-        let scores = action.payload;
-        let occurences: { [country: string]: number } = {};
+    setFailureStatus :(state,action: PayloadAction<string>) => {
+      state.status = 'failed';
+      state.error = action.payload;
+    },
+    setLoadingStatus :(state) => {
+      state.status = 'loading';
+    },
+    setIdleStatus :(state) => {
+      state.status = 'idle';
+    },
+    reset: (state) => {
+     // state.scores = initialState.scores;
+    },
+    setBattingAverages: (state, action: PayloadAction<Score[]>) => {
+      debugger;
+      let scores = action.payload;
+      let occurences: { [country: string]: number } = {};
 
-        // the final 'scores' contains the items with unique country names and the scores of duplicates added up.
-        scores = scores.reduce((accumulator: Score[], current: Score) => {
-          occurences[current.country]
-          ? occurences[current.country]++
-          : (occurences[current.country] = 1);
-          // find if the same country item exits in the accumulator array
-          const score = accumulator.find(
-            (item: Score) => item.country === current.country
-          );
-
-          if (!score) {
-            return accumulator.concat([current]);
-          } else {
-            score.score = score.score + current.score;
-            return accumulator;
-          }
-        }, []);
-
-        // get the average of the scores by dividing by the occurences 
-        scores.forEach(
-          (score) => (score.score = score.score / occurences[score.country])
+      // the final 'scores' contains the items with unique country names and the scores of duplicates added up.
+      scores = scores.reduce((accumulator: Score[], current: Score) => {
+        occurences[current.country]
+        ? occurences[current.country]++
+        : (occurences[current.country] = 1);
+        // find if the same country item exits in the accumulator array
+        const score = accumulator.find(
+          (item: Score) => item.country === current.country
         );
-        state.scores = scores;
 
-      });
+        if (!score) {
+          return accumulator.concat([current]);
+        } else {
+          score.score = score.score + current.score;
+          return accumulator;
+        }
+      }, []);
+
+      // get the average of the scores by dividing by the occurences 
+      scores.forEach(
+        (score) => (score.score = score.score / occurences[score.country])
+      );
+      state.scores = scores;
+    }
   },
 });
 
-export const scores = (state: RootState) => state.scoreBoard.scores;
-
+export const { reset, setBattingAverages, setFailureStatus, setLoadingStatus, setIdleStatus} = scoreBoardSlice.actions;
 export default scoreBoardSlice.reducer;

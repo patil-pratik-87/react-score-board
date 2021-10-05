@@ -5,9 +5,7 @@ import { ScoreBoard } from './features/score-board/ScoreBoard';
 
 function App() {
   return (
-    <div className="board">
-      <ScoreBoard/>
-    </div>
+    <ScoreBoard/>
   );
 }
 
