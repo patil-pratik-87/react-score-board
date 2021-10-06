@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "../../app/store";
+import { AppThunk } from "../../app/shared/store";
 import { Score } from "./Score";
 import { fetchBattingAverages } from "./scoreBoardService";
 
@@ -23,14 +23,13 @@ const initialState: ScoreBoardState = {
 //   }
 // );
 
-export const fetchScores = (mock:'true' | 'false'): AppThunk => async (dispatch,getState) => {
+export const fetchScores = (mock:boolean): AppThunk => async (dispatch,getState) => {
   try {
     dispatch(setLoadingStatus())
     const response = await fetchBattingAverages(mock);
     dispatch(setBattingAverages(response));
     dispatch(setIdleStatus())
   } catch (error) {
-    debugger
     dispatch(setFailureStatus('There was an error while getting the scores'))
   }
 };
@@ -49,11 +48,7 @@ export const scoreBoardSlice = createSlice({
     setIdleStatus :(state) => {
       state.status = 'idle';
     },
-    reset: (state) => {
-     // state.scores = initialState.scores;
-    },
     setBattingAverages: (state, action: PayloadAction<Score[]>) => {
-      debugger;
       let scores = action.payload;
       let occurences: { [country: string]: number } = {};
 
@@ -84,5 +79,5 @@ export const scoreBoardSlice = createSlice({
   },
 });
 
-export const { reset, setBattingAverages, setFailureStatus, setLoadingStatus, setIdleStatus} = scoreBoardSlice.actions;
+export const { setBattingAverages, setFailureStatus, setLoadingStatus, setIdleStatus} = scoreBoardSlice.actions;
 export default scoreBoardSlice.reducer;

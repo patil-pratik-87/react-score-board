@@ -6,14 +6,50 @@
     padding: 1rem;
     position: relative;
     box-shadow: 0 10px 20px rgba(0,0,0,0.10), 0 6px 6px rgba(0,0,0,0.05);
-}
+    
+    * {
+        margin-right: 10px;
+    }
+    
+    .bar {
+        display: flex;
+        align-items: center;
+    }
 
-.item * {
-    margin-right: 10px;
-}
+    .textField {
+        width: 250px;
+    }
 
-.bar {
-    display: flex;
-    align-items: center;
-}
+    @media (min-width: 600px) and (max-width: 900px) {
+        .textField {
+            width: 200px;
+        }
+    }
+}    
+@media (max-width: 600px) {
+    .item {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 2px;
+        margin: 1rem;
+        padding: 1rem;
+        position: relative;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.10), 0 6px 6px rgba(0,0,0,0.05);
+        
 
+                
+        * {
+            margin-bottom: 15px;
+        }
+        
+        .bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .textField {
+            width: 250px;
+        }
+    }
+}

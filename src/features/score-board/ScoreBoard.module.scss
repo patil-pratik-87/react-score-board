@@ -1,0 +1,33 @@
+.boardContainer {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+
+  .title {
+    font-size: 20px;
+    color:#05AACC
+  }
+
+  .infoIcon {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+    .progressBar {
+      margin: -1rem -1rem 1rem -1rem;
+    }
+    
+    .board {
+      padding: 1rem;
+     // border: solid lightblue 1px;
+       box-shadow: 0 10px 20px rgba(0,0,0,0.10), 0 6px 6px rgba(0,0,0,0.05);
+    }
+
+    .textField {
+      width: 250px;
+    }
+    
+  }
