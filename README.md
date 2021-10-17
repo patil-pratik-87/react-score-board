@@ -1,3 +1,6 @@
+<img width="1030" alt="Screenshot 2021-10-17 at 12 04 47 PM" src="https://user-images.githubusercontent.com/63217589/137614815-726a15c7-0407-4163-8c71-8198b0464dbe.png">
+
+
 
 This app will give you the batting averages for Sachin Tendulkar against different countries in the past year.
 
